@@ -1,0 +1,18 @@
+{
+
+    "manifest_version": 2,
+    "name": "bfs",
+    "version": "1.0",
+    "permissions": [
+      "bookmarks"
+    ],
+
+    "content_scripts": [
+      {
+        "matches": ["https://www.google.com/"],
+        "js": ["bfs.js"]
+      }
+    ]
+  
+  }
+  
