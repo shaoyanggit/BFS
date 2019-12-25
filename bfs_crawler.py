@@ -1,5 +1,6 @@
 import json
 import requests
+import re
 from bs4 import BeautifulSoup
 
 with open("bookmarks_2019_11_6.html", encoding='utf-8') as f:
@@ -18,8 +19,11 @@ for i, a_tag in enumerate(a_tags):
         if r.status_code == requests.codes.ok:
             soup = BeautifulSoup(r.text, 'lxml')
             if soup.body != None:
+                for s in soup(["script", "style", "nav", "button"]):
+                    s.extract()
                 plain_text = soup.body.get_text()
-                plain_text = plain_text.replace(" ", "")
+                plain_text = re.sub(r' {2,}', " ", plain_text)
+                plain_text = re.sub(r'\t', "", plain_text)
                 plain_text = plain_text.replace("\n", "")
 
         # handle categories
@@ -31,8 +35,11 @@ for i, a_tag in enumerate(a_tags):
         data.append({'id': i, 'title': a_tag.string, 'url': a_tag.get('href'), 'categories': cats, 'plain_text': plain_text})
     except:
         error += 1
+    
+    if i >= 10:
+        break
 
-with open("data.json", "w", encoding='utf-8') as outfile:
+with open("data_sample.json", "w", encoding='utf-8') as outfile:
     json.dump(data, outfile, ensure_ascii=False)
     outfile.close()
 
