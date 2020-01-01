@@ -1,31 +1,62 @@
-console.log("start bfs.js");
-
 function initialize(){
-    console.log("start initialization")
-    var tree;
+
+    let list=[];
+    let queue=[];
+    
     chrome.bookmarks.getTree(function(tree) {
-        console.log(tree);
-        // TODO iterate tree nodes and send to server
+        
+        for(let i=0;i<tree.length;i++)
+        queue.push(tree[i]);
+        
+        while(queue.length!=0){
+            let node=queue.shift();
+            
+            if(node.children!=null){ // folder
+                let children=node.children;
+                for(let i=0;i<children.length;i++)
+                queue.push(children[i]);
+            }
+            else if(node.url!=null){ // bookmark
+                list.push(node);
+            }
+            else{ // seperator
+                ;
+            }
+        }
     });
+    
+    // send to server
+
+    let xhttp=new XMLHttpRequest();
+    xhttp.open("POST","localhost:2020",true);
+    xhttp.setRequestHeader("Content-Type","text/plain");
+
+    list.forEach(function(item,index,array){
+        xhttp.send(item.url);
+    });
+
 }
 
 chrome.runtime.onInstalled.addListener(initialize)
-console.log("add runtime.onInstalled listener successfully");
 
 function handleCreated(id, bookmarkInfo) {
-    console.log(`New bookmark ID: ${id}`);
-    console.log(`New bookmark URL: ${bookmarkInfo.url}`);
-    // TODO send new bookmarks to server
+
+    let xhttp=new XMLHttpRequest();
+    xhttp.open("POST","localhost:2020",true);
+    xhttp.setRequestHeader("Content-Type","text/plain");
+    xhttp.send(bookmarkInfo.url);
 }
   
-chrome.bookmarks.onCreated.addListener(handleCreated);
-
-function suggest(suggestResults){
-    ;
-}
+chrome.bookmarks.onCreated.addListener(handleCreated)
 
 chrome.omnibox.onInputChanged.addListener(function(text,suggest){
-    // TODO open connection and send query
+    let xhttp=new XMLHttpRequest();
+    xhttp.open("GET","localhost:2020",true);
+    xhttp.onload=function(){
+        let suggestion=new SuggestResult();
+        suggestion.content=this.responseText;
+        suggestion.description="Suggestion from BFS";
+        suggest(suggestion);
+    }
+    XPathResult.send(null);
 }); 
-
-console.log("end bfs.js");
