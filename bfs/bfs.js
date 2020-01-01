@@ -1,32 +1,31 @@
-tree=browser.bookmarks.getTree(); // TODO doesn't work
-console.log("Hello, JavaScript!"); // for debugging
+console.log("start bfs.js");
 
-// walk the bookmark tree
-// get a list of bookmarks
-// TODO test
-function walkTree(tree){
-    
-    let list=[];
-    let queue=[];
-    queue.push(tree);
-
-    while(queue.length!=0){
-
-        let node=queue.shift();
-
-        if(node.type==="folder"){
-            let children=node.children;
-            for(let i=0;i<children.length;i++){
-                queue.push(children[i]);
-            }
-        }
-        else if(node.type==="bookmark"){
-            list.push(node);
-        }
-        else{ // node.type==="seperator"
-            // nothing to do
-        }
-    }
-    
-    return list;
+function initialize(){
+    console.log("start initialization")
+    var tree;
+    chrome.bookmarks.getTree(function(tree) {
+        console.log(tree);
+        // TODO iterate tree nodes and send to server
+    });
 }
+
+chrome.runtime.onInstalled.addListener(initialize)
+console.log("add runtime.onInstalled listener successfully");
+
+function handleCreated(id, bookmarkInfo) {
+    console.log(`New bookmark ID: ${id}`);
+    console.log(`New bookmark URL: ${bookmarkInfo.url}`);
+    // TODO send new bookmarks to server
+}
+  
+chrome.bookmarks.onCreated.addListener(handleCreated);
+
+function suggest(suggestResults){
+    ;
+}
+
+chrome.omnibox.onInputChanged.addListener(function(text,suggest){
+    // TODO open connection and send query
+}); 
+
+console.log("end bfs.js");
