@@ -2,7 +2,6 @@ function initialize(){
 
     let list=[];
     let queue=[];
-    
     chrome.bookmarks.getTree(function(tree) {
         
         for(let i=0;i<tree.length;i++)
@@ -58,5 +57,6 @@ chrome.omnibox.onInputChanged.addListener(function(text,suggest){
         suggestion.description="Suggestion from BFS";
         suggest(suggestion);
     }
+    console.log('add bookmark');
     XPathResult.send(null);
 }); 
