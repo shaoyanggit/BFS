@@ -27,7 +27,7 @@ function initialize(){
     // send to server
 
     let xhttp=new XMLHttpRequest();
-    xhttp.open("POST","localhost:2020",true);
+    xhttp.open("POST","http://127.0.0.1:2020",true);
     xhttp.setRequestHeader("Content-Type","text/plain");
 
     list.forEach(function(item,index,array){
@@ -41,7 +41,7 @@ chrome.runtime.onInstalled.addListener(initialize)
 function handleCreated(id, bookmarkInfo) {
 
     let xhttp=new XMLHttpRequest();
-    xhttp.open("POST","localhost:2020",true);
+    xhttp.open("POST","http://127.0.0.1:2020",true);
     xhttp.setRequestHeader("Content-Type","text/plain");
     xhttp.send(bookmarkInfo.url);
 }
@@ -50,7 +50,7 @@ chrome.bookmarks.onCreated.addListener(handleCreated)
 
 chrome.omnibox.onInputChanged.addListener(function(text,suggest){
     let xhttp=new XMLHttpRequest();
-    xhttp.open("GET","localhost:2020",true);
+    xhttp.open("GET","http://127.0.0.1:2020",true);
     xhttp.onload=function(){
         let suggestion=new SuggestResult();
         suggestion.content=this.responseText;
