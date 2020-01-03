@@ -20,3 +20,8 @@ bookmarks的執行權限已經有了，宣告在manifest.json的permissions處�
 from ckiptagger import data_utils
 data_utils.download_data_gdown("./")
 ```
+
+## TODO
+* Stop word
+    * 中文
+    * 英文
