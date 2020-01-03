@@ -22,17 +22,18 @@ function initialize(){
                 ;
             }
         }
+        send(list);
     });
     
     // send to server
-
-    let xhttp=new XMLHttpRequest();
-    xhttp.open("POST","http://127.0.0.1:2020",true);
-    xhttp.setRequestHeader("Content-Type","text/plain");
-
-    list.forEach(function(item,index,array){
-        xhttp.send(item.url);
-    });
+    function send(list) {
+        list.forEach(function(item,index,array){
+            let xhttp=new XMLHttpRequest();
+            xhttp.open("POST","http://127.0.0.1:2020",true);
+            xhttp.setRequestHeader("Content-Type","text/plain");
+            xhttp.send(item.url);
+        });
+    }
 
 }
 
