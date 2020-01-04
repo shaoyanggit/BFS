@@ -10,3 +10,4 @@ data
 *.dict
 bookmarks.csv
 full_text.csv
+__pycache__
