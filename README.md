@@ -14,14 +14,25 @@ bookmarks的執行權限已經有了，宣告在manifest.json的permissions處�
 
 - 瀏覽器的接口已經清楚了，暫時只考慮Chrome。
 
-## Download ckip model
+## requirements
+
+### Download ckip model
 ```
 # -*- coding: utf-8 -*-
 from ckiptagger import data_utils
 data_utils.download_data_gdown("./")
 ```
 
-## TODO
-* Stop word
-    * 中文
-    * 英文
+### install python packages
+```
+pip install -r requirements.txt
+```
+
+## run server
+```
+cd server
+python bfs.py
+```
+
+## references
+* Building Search Engines with Gensim: https://christop.club/talks/tripython_2015/#/
