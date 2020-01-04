@@ -36,7 +36,14 @@ def query():
     lsi_index = gensim.similarities.Similarity.load('bookmark_lsi_index.index')
     corpus = BookmarkFullTextCorpus(gensim.utils.SaveLoad.load('bookmarks_token.dict'), 'full_text.csv')
     results = search(request.args.get('query'), corpus, lsi_model, lsi_index)
-    return '\n'.join(results)
+    
+    response = app.response_class(
+        response=json.dumps(results),
+        status=200,
+        mimetype='application/json'
+    )
+    # return '\n'.join(results)
+    return response
 
 if __name__ == '__main__':
     app.run(port=2020)
