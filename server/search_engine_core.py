@@ -31,6 +31,7 @@ def preprocess(text):
     return tokens
 
 def build_dictionary(csv_file):
+    print('start building dictionary')
     def iter_texts():
         with open(csv_file, encoding='utf-8') as f:
             for row in csv.DictReader(f):
@@ -64,6 +65,7 @@ class BookmarkFullTextCorpus():
                     return row
 
 def build_model(corpus, csv_file):
+    print('start building model')
     lsi = gensim.models.LsiModel(corpus,
                                 num_topics=100,
                                 power_iters=10,
@@ -84,7 +86,7 @@ def search(query, corpus, model, index):
     results = []
     for doc, percent in index[model[query_bow]]:
         original_doc = corpus.get_original(doc)
-        results.append("{:.5f} => {} ({})".format(percent, original_doc['title'], original_doc['url']))
+        results.append({'percent': percent, 'title': original_doc['title'], 'url': original_doc['url']})
 
     return results
 
