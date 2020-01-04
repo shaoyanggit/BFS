@@ -1,0 +1,12 @@
+.vscode
+venv
+files
+data.json
+data
+*.0
+*.index
+*.lsi
+*.projection
+*.dict
+bookmarks.csv
+full_text.csv
