@@ -41,6 +41,17 @@ def build_dictionary(csv_file):
     dictionary.save('bookmarks_token.dict')
     print('build dictionary done')
 
+def rebuild_dictionary(csv_file):
+    print('start rebuilding dictionary')
+    dictionary = gensim.utils.SaveLoad.load('bookmarks_token.dict')
+    
+    with open(csv_file, encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            dictionary.add_documents(preprocess(list(csv.DictReader(f))[-1]))
+    
+    dictionary.save('bookmarks_token.dict')
+    print('rebuild dictionary done')
+
 class BookmarkFullTextCorpus():
     def __init__(self, dictionary, csv_file):
         self.dictionary = dictionary

@@ -41,9 +41,9 @@ chrome.runtime.onInstalled.addListener(initialize)
 function handleCreated(id, bookmarkInfo) {
 
     let xhttp=new XMLHttpRequest();
-    xhttp.open("POST","http://127.0.0.1:2020",true);
+    xhttp.open("POST","http://127.0.0.1:2020/new",true);
     xhttp.setRequestHeader("Content-Type","text/plain");
-    xhttp.send(bookmarkInfo.url);
+    xhttp.send(JSON.stringify({'title': bookmarkInfo.title, 'url': bookmarkInfo.url}));
 }
   
 chrome.bookmarks.onCreated.addListener(handleCreated)

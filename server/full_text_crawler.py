@@ -1,12 +1,16 @@
+import os
 import csv
 import requests
 import re
 from bs4 import BeautifulSoup
 
-def craw_data(target_file, out_file):
+def craw_data(out_file, target_file=None, target=None):
     targets = []
-    with open(target_file, encoding='utf-8') as f:
-        targets = list(csv.DictReader(f))
+    if target:
+        targets.append(target)
+    else:
+        with open(target_file, encoding='utf-8') as f:
+            targets = list(csv.DictReader(f))
 
     data = []
     error = 0
@@ -32,11 +36,17 @@ def craw_data(target_file, out_file):
         if i >= 10:
             break
 
-    with open(out_file, "w", encoding='utf-8') as outfile:
-        fieldnames = ['id', 'title', 'url', 'plain_text']
-        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(data)
+    if os.stat(out_file).st_size == 0 and len(data) > 0:
+        with open(out_file, "w", encoding='utf-8') as outfile:
+            fieldnames = ['id', 'title', 'url', 'plain_text']
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(data)
+    else:
+        with open(out_file, "w", encoding='utf-8') as outfile:
+            fieldnames = ['id', 'title', 'url', 'plain_text']
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer.writerows(data)
 
     print("done with {} errors in {} data".format(error, len(targets)))
     return "done with {} errors in {} data".format(error, len(targets))
