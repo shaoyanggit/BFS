@@ -4,6 +4,7 @@ from ckiptagger import WS
 from opencc import OpenCC
 import re
 import gensim
+import datetime
 
 cc = OpenCC('s2tw')
 ws = WS("./data")
@@ -15,23 +16,26 @@ with open('stopWords.txt', 'r', encoding='UTF-8') as file:
         chi_stopWords.append(data)
 
 def preprocess(text):
-    chi_tokens = []
-    chi_text = "".join(re.compile(r'[\u4e00-\u9fa5]').findall(text))
-    if len(chi_text) > 0:
-        chi_text_seg = ws([chi_text])[0]
-        chi_tokens = list(filter(lambda a: a not in chi_stopWords, chi_text_seg))
-
-    eng_tokens = []
-    eng_text = " ".join(re.compile(r'[\u0061-\u007a]+').findall(text.lower()))
-    if len(eng_text) > 0:
-        eng_text = gensim.parsing.remove_stopwords(eng_text)
-        eng_tokens = list(gensim.utils.tokenize(eng_text))
-
-    tokens = chi_tokens + eng_tokens
-    return tokens
+    try:
+        chi_tokens = []
+        chi_text = "".join(re.compile(r'[\u4e00-\u9fa5]').findall(text))
+        if len(chi_text) > 0:
+            chi_text_seg = ws([chi_text])[0]
+            chi_tokens = list(filter(lambda a: a not in chi_stopWords, chi_text_seg))
+        eng_tokens = []
+        eng_text = " ".join(re.compile(r'[\u0061-\u007a]+').findall(text.lower()))
+        if len(eng_text) > 0:
+            eng_text = gensim.parsing.remove_stopwords(eng_text)
+            eng_tokens = list(gensim.utils.tokenize(eng_text))
+        tokens = chi_tokens + eng_tokens
+        return tokens
+    except:
+        print('preprocess error. text started with "{}"...'.format(text[:50]))
+        return []
 
 def build_dictionary(csv_file):
     print('start building dictionary')
+    start_time = datetime.datetime.now()
     def iter_texts():
         with open(csv_file, encoding='utf-8') as f:
             for row in csv.DictReader(f):
@@ -39,16 +43,21 @@ def build_dictionary(csv_file):
     
     dictionary = gensim.corpora.Dictionary(iter_texts())
     dictionary.save('bookmarks_token.dict')
+    end_time = datetime.datetime.now()
+    print('start at {}, end at {}'.format(start_time, end_time))
     print('build dictionary done')
 
 def rebuild_dictionary(csv_file):
     print('start rebuilding dictionary')
+    start_time = datetime.datetime.now()
     dictionary = gensim.utils.SaveLoad.load('bookmarks_token.dict')
     
     with open(csv_file, encoding='utf-8') as f:
         dictionary.add_documents([preprocess(list(csv.DictReader(f))[-1]['plain_text'])])
     
     dictionary.save('bookmarks_token.dict')
+    end_time = datetime.datetime.now()
+    print('start at {}, end at {}'.format(start_time, end_time))
     print('rebuild dictionary done')
 
 class BookmarkFullTextCorpus():
@@ -76,6 +85,7 @@ class BookmarkFullTextCorpus():
 
 def build_model(corpus, csv_file):
     print('start building model')
+    start_time = datetime.datetime.now()
     lsi = gensim.models.LsiModel(corpus,
                                 num_topics=100,
                                 power_iters=10,
@@ -88,6 +98,8 @@ def build_model(corpus, csv_file):
 
     lsi.save('bookmark_lsi_model.lsi')
     lsi_index.save('bookmark_lsi_index.index')
+    end_time = datetime.datetime.now()
+    print('start at {}, end at {}'.format(start_time, end_time))
     print('build model done')
 
 def search(query, corpus, model, index):

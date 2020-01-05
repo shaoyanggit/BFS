@@ -14,10 +14,16 @@ def craw_data(out_file, target_file=None, target=None):
 
     data = []
     error = 0
+    pdf = 0
 
     for i, target in enumerate(targets):
         print(i)
-        # handle plain text
+        
+        # skip pdf, cannot hadle pdf now
+        if re.search(".pdf$", target['url']):
+            pdf += 1
+            continue
+
         try:
             r = requests.get(target['url'])
             if r.status_code == requests.codes.ok:
@@ -33,8 +39,8 @@ def craw_data(out_file, target_file=None, target=None):
         except:
             error += 1
         
-        if i >= 10:
-            break
+        # if i >= 100:
+        #     break
 
     if not os.path.isfile(out_file) and len(data) > 0:
         with open(out_file, "w", encoding='utf-8') as outfile:
@@ -48,5 +54,4 @@ def craw_data(out_file, target_file=None, target=None):
             writer = csv.DictWriter(outfile, fieldnames=fieldnames)
             writer.writerows(data)
 
-    print("done with {} errors in {} data".format(error, len(targets)))
-    return "done with {} errors in {} data".format(error, len(targets))
+    print("done with {} errors in {} data. skip with {} pdf".format(error, len(targets), pdf))

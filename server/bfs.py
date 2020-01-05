@@ -76,4 +76,4 @@ def new_bookmark():
     return content, status.HTTP_200_OK
 
 if __name__ == '__main__':
-    app.run(port=2020, debug=True)
+    app.run(port=2020)
