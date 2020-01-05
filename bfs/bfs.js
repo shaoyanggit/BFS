@@ -23,7 +23,6 @@ function initialize(){
             }
         }
         list_json = JSON.stringify(list);
-        console.log(list_json);
         send(list_json);
     });
     
@@ -51,13 +50,21 @@ chrome.bookmarks.onCreated.addListener(handleCreated)
 
 chrome.omnibox.onInputChanged.addListener(function(text,suggest){
     let xhttp=new XMLHttpRequest();
-    xhttp.open("GET","http://127.0.0.1:2020",true);
+    xhttp.open("GET","http://127.0.0.1:2020/search?query="+text,true);
     xhttp.onload=function(){
-        let suggestion=new SuggestResult();
-        suggestion.content=this.responseText;
-        suggestion.description="Suggestion from BFS";
-        suggest(suggestion);
+        let result = JSON.parse(this.responseText);
+        suggestList=[];
+        for(let i=0;i<result.length;i=i+1){
+            let suggestion = {};
+            suggestion.content=result[i].url;
+            suggestion.description=result[i].title;
+            suggestList.push(suggestion);
+        }
+        suggest(suggestList);
     }
-    console.log('add bookmark');
-    XPathResult.send(null);
+    xhttp.send(null);
 }); 
+
+chrome.omnibox.onInputEntered.addListener(function(url){
+    chrome.tabs.update(null,{url:url});
+});

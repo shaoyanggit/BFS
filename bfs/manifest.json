@@ -7,7 +7,7 @@
     "persistent":false
   },
   "permissions":["bookmarks"],
-  "omnibox":{"keyword":"aaron"},
+  "omnibox":{"keyword":"bfs"},
   "icons":{
     "16":"16x16icon.png"
   }
