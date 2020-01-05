@@ -29,22 +29,22 @@ def craw_data(out_file, target_file=None, target=None):
                     plain_text = re.sub(r' {2,}', " ", plain_text)
                     plain_text = re.sub(r'[\t\n]', "", plain_text)
             
-            data.append({'id': i, 'title': target['title'], 'url': target['url'], 'plain_text': plain_text})
+            data.append({'title': target['title'], 'url': target['url'], 'plain_text': plain_text})
         except:
             error += 1
         
         if i >= 10:
             break
 
-    if os.stat(out_file).st_size == 0 and len(data) > 0:
+    if not os.path.isfile(out_file) and len(data) > 0:
         with open(out_file, "w", encoding='utf-8') as outfile:
-            fieldnames = ['id', 'title', 'url', 'plain_text']
+            fieldnames = ['title', 'url', 'plain_text']
             writer = csv.DictWriter(outfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(data)
     else:
-        with open(out_file, "w", encoding='utf-8') as outfile:
-            fieldnames = ['id', 'title', 'url', 'plain_text']
+        with open(out_file, "a", encoding='utf-8') as outfile:
+            fieldnames = ['title', 'url', 'plain_text']
             writer = csv.DictWriter(outfile, fieldnames=fieldnames)
             writer.writerows(data)
 
