@@ -48,22 +48,64 @@ function handleCreated(id, bookmarkInfo) {
   
 chrome.bookmarks.onCreated.addListener(handleCreated)
 
-chrome.omnibox.onInputChanged.addListener(function(text,suggest){
+
+function debounce(fn, delay) {
+    // 定时器，用来 setTimeout
+    var timer
+
+    // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
+    return function () {
+        chrome.omnibox.setDefaultSuggestion({
+            description: 'Searching...',
+        })
+        // 保存函数调用时的上下文和参数，传递给 fn
+        var context = this
+        var args = arguments
+
+        // 每次这个返回的函数被调用，就清除定时器，以保证不执行 fn
+        clearTimeout(timer)
+
+        // 当返回的函数被最后一次调用后（也就是用户停止了某个连续的操作），
+        // 再过 delay 毫秒就执行 fn
+        timer = setTimeout(function () {
+        fn.apply(context, args)
+        }, delay)
+    }
+}
+
+function encodeXml(s) {
+    var holder = document.createElement('div');
+    holder.textContent = s;
+    return holder.innerHTML;
+}
+
+function getSearchResult(text,suggest){
     let xhttp=new XMLHttpRequest();
     xhttp.open("GET","http://127.0.0.1:2020/search?query="+text,true);
     xhttp.onload=function(){
         let result = JSON.parse(this.responseText);
-        suggestList=[];
-        for(let i=0;i<result.length;i=i+1){
-            let suggestion = {};
-            suggestion.content=result[i].url;
-            suggestion.description=result[i].title;
-            suggestList.push(suggestion);
+        if(result.length == 0) {
+            chrome.omnibox.setDefaultSuggestion({
+                description: 'Result not found',
+            })
+        } else {
+            chrome.omnibox.setDefaultSuggestion({
+                description: 'Found result!',
+            })
+            suggestList=[];
+            for(let i=0;i<result.length;i=i+1){
+                let suggestion = {};
+                suggestion.content=result[i].url;
+                suggestion.description=encodeXml(result[i].title);
+                suggestList.push(suggestion);
+            }
+            suggest(suggestList);
         }
-        suggest(suggestList);
     }
     xhttp.send(null);
-}); 
+}
+
+chrome.omnibox.onInputChanged.addListener(debounce(getSearchResult, 500)) 
 
 chrome.omnibox.onInputEntered.addListener(function(url){
     chrome.tabs.update(null,{url:url});
