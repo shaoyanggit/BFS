@@ -89,9 +89,6 @@ function getSearchResult(text,suggest){
                 description: 'Result not found',
             })
         } else {
-            chrome.omnibox.setDefaultSuggestion({
-                description: 'Found result!',
-            })
             suggestList=[];
             for(let i=0;i<result.length;i=i+1){
                 let suggestion = {};
@@ -100,6 +97,9 @@ function getSearchResult(text,suggest){
                 suggestList.push(suggestion);
             }
             suggest(suggestList);
+            chrome.omnibox.setDefaultSuggestion({
+                description: 'Found result!',
+            })
         }
     }
     xhttp.send(null);
