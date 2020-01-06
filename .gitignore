@@ -11,3 +11,5 @@ data
 bookmarks.csv
 full_text.csv
 __pycache__
+logs.txt
+*.npy
