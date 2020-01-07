@@ -34,6 +34,10 @@ cd server
 python bfs.py
 ```
 
+## load extension for Chrome
+Settings->Extensions->turn on Developer mode
+Load unpacked->select file "manifest.json"->done
+
 ## references
 * Building Search Engines with Gensim: https://christop.club/talks/tripython_2015/#/
 * Debounce: https://github.com/lishengzxc/bblog/issues/7
