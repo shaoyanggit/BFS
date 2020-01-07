@@ -28,4 +28,4 @@ python bfs.py
 ## references
 * Building Search Engines with Gensim: https://christop.club/talks/tripython_2015/#/
 * Debounce: https://github.com/lishengzxc/bblog/issues/7
-- [mozilla-JavaScript-APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API)
+* [mozilla-JavaScript-APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API)
