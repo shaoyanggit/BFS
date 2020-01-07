@@ -35,8 +35,8 @@ python bfs.py
 ```
 
 ## load extension for Chrome
-### Settings->Extensions->turn on Developer mode
-### Load unpacked->select file "manifest.json"->done
+* Settings->Extensions->turn on Developer mode
+* Load unpacked->select file "manifest.json"->done
 
 ## references
 * Building Search Engines with Gensim: https://christop.club/talks/tripython_2015/#/
