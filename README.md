@@ -10,7 +10,14 @@ from ckiptagger import data_utils
 data_utils.download_data_gdown("./")
 ```
 
-### Install python packages
+### Install python packages using virtualenv
+#### Create and activate virtualenv
+```
+pip install virtualenv
+virtualenv venv
+.\venv\Scripts\activate
+```
+#### Install required packages
 ```
 pip install -r requirements.txt
 ```
